@@ -30,17 +30,17 @@ export default class PostController {
   }
 
   async addLike(req, res) {
-    const { userId, _id } = req.body;
+    const { user, _id } = req.body;
 
     try {
       const { likes } = await Post.findOne({ _id }, { _id: 0, likes: 1 }).lean();
-      const userLike = likes.find((like) => like === userId);
+      const userLike = likes.find((like) => like._id === user._id);
 
       if (userLike) {
-        const index = likes.indexOf(userId);
+        const index = likes.indexOf(user);
         likes.splice(index, 1);
       } else {
-        likes.push(userId);
+        likes.push(user);
       }
 
       const update = await Post.updateOne({ _id }, { $set: { likes } });
@@ -66,5 +66,17 @@ export default class PostController {
     } catch (err) {
       return res.status(500).json(err);
     }
+  }
+
+  async deletePost(req, res) {
+    const { id } = req.params;
+
+    const deleted = await Post.deleteOne({ _id: id });
+
+    if (deleted) {
+      return res.status(200).end();
+    }
+
+    return res.status(500).end();
   }
 }

@@ -5,7 +5,7 @@ export default class UserController {
   async login(req, res) {
     const { login, pass } = req.body;
 
-    const user = await User.findOne({ email: login, senha: pass });
+    const user = await User.findOne({ email: login, senha: pass }, { senha: 0, __v: 0 });
 
     if (user) {
       return res.json(user);
@@ -15,13 +15,14 @@ export default class UserController {
   }
 
   async singIn(req, res) {
-    const { email, pass } = req.body;
+    const { email, name, pass } = req.body;
 
     const registered = await User
       .create({
         email,
-        nome: 'Cristiano',
+        nome: name,
         senha: pass,
+        perfilPhoto: process.env.DEFAULT_IMAGE,
       });
 
     if (registered) {

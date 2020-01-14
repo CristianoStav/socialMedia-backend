@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const Post = mongoose.Schema({
   author: String,
+  authorId: mongoose.Types.ObjectId,
   thumbAuthor: String,
   date: String,
   description: String,
